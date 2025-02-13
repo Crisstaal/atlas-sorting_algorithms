@@ -1,23 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/**
- * print_array - Prints the elements of the array.
- * @array: Array of integers.
- * @size: Number of elements in the array.
- */
-void print_array(int *array, size_t size)
-{
-	size_t i;
-
-	for (i = 0; i < size; i++)
-	{
-		printf("%d", array[i]);
-		if (i < size - 1)
-			printf(", ");
-	}
-	printf("\n");
-}
+void print_array(int *array, size_t size);
 
 /**
  * counting_sort - Sorts an array of integers in ascending order
@@ -27,7 +11,7 @@ void print_array(int *array, size_t size)
  */
 void counting_sort(int *array, size_t size)
 {
-	int *counting_array = NULL;
+	int *counting_array = NULL, *output_array = NULL;
 	int max = 0, i;
 
 	if (array == NULL || size < 2)
@@ -40,10 +24,16 @@ void counting_sort(int *array, size_t size)
 			max = array[i];
 	}
 
-	/* Allocate memory for counting array of size max + 1 */
+	/* Allocate memory for counting array and output array */
 	counting_array = malloc((max + 1) * sizeof(int));
-	if (counting_array == NULL)
+	output_array = malloc(size * sizeof(int));
+
+	if (counting_array == NULL || output_array == NULL)
+	{
+		free(counting_array);
+		free(output_array);
 		return;
+	}
 
 	/* Initialize counting array with zeros */
 	for (i = 0; i <= max; i++)
@@ -55,21 +45,29 @@ void counting_sort(int *array, size_t size)
 		counting_array[array[i]]++;
 	}
 
+	/* Compute the cumulative count */
+	for (i = 1; i <= max; i++)
+	{
+		counting_array[i] += counting_array[i - 1];
+	}
+
 	/* Print the counting array */
 	print_array(counting_array, max + 1);
 
-	/* Rebuild the original array using the counting array */
-	i = 0;
-	for (int j = 0; j <= max; j++)
+	/* Build the output sorted array */
+	for (i = (int)size - 1; i >= 0; i--)
 	{
-		while (counting_array[j] > 0)
-		{
-			array[i] = j;
-			i++;
-			counting_array[j]--;
-		}
+		output_array[counting_array[array[i]] - 1] = array[i];
+		counting_array[array[i]]--;
 	}
 
-	/* Free the allocated memory for the counting array */
+	/* Copy sorted elements back to original array */
+	for (i = 0; i < (int)size; i++)
+	{
+		array[i] = output_array[i];
+	}
+
+	/* Free allocated memory */
 	free(counting_array);
+	free(output_array);
 }
