@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <stddef.h>
 
 void print_array(int *array, size_t size);
+
 /**
  * shell_sort - Sorts an array of integers in ascending order
  *             using the Shell sort algorithm (Knuth sequence).
@@ -15,7 +17,7 @@ void shell_sort(int *array, size_t size)
 
 	/* Find the maximum gap using the Knuth sequence */
 	while (gap < size / 3)
-		gap = 3 * gap + 1;
+		gap = gap * 3 + 1;
 
 	/* Perform sorting with decreasing gap */
 	while (gap > 0)
@@ -33,6 +35,8 @@ void shell_sort(int *array, size_t size)
 			}
 			array[j] = temp;
 		}
+		/* Print the array after each gap decrease */
+		print_array(array, size);
 		gap = (gap - 1) / 3;
 	}
 }
