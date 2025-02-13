@@ -5,76 +5,79 @@ void print_array(int *array, size_t size);
 
 /**
  * merge - Merges two sorted subarrays into one sorted array.
- * @array: Array of integers.
- * @left: Left subarray.
- * @right: Right subarray.
- * @size_left: Size of the left subarray.
- * @size_right: Size of the right subarray.
+ * @array: The original array (to be updated).
+ * @temp: Temporary array for merging.
+ * @left: Starting index of the left subarray.
+ * @mid: Middle index (end of left, start of right).
+ * @right: End index of the right subarray.
  */
-void merge(int *array, int *left, int *right, size_t size_left, size_t size_right)
+void merge(int *array, int *temp, size_t left, size_t mid, size_t right)
 {
-	size_t i = 0, j = 0, k = 0;
+	size_t i = left, j = mid, k = left;
 
-	while (i < size_left && j < size_right)
+	/* Merge elements into temp */
+	while (i < mid && j < right)
 	{
-		if (left[i] < right[j])
-			array[k++] = left[i++];
+		if (array[i] < array[j])
+			temp[k++] = array[i++];
 		else
-			array[k++] = right[j++];
+			temp[k++] = array[j++];
 	}
 
-	while (i < size_left)
-		array[k++] = left[i++];
-	while (j < size_right)
-		array[k++] = right[j++];
+	/* Copy remaining elements from left subarray */
+	while (i < mid)
+		temp[k++] = array[i++];
+	/* Copy remaining elements from right subarray */
+	while (j < right)
+		temp[k++] = array[j++];
 
+	/* Copy sorted elements back into the original array */
+	for (i = left; i < right; i++)
+		array[i] = temp[i];
+
+	/* Print merge process */
 	printf("Merging...\n");
 	printf("[left]: ");
-	print_array(left, size_left);
+	print_array(array + left, mid - left);
 	printf("[right]: ");
-	print_array(right, size_right);
+	print_array(array + mid, right - mid);
 	printf("[Done]: ");
-	print_array(array, size_left + size_right);
+	print_array(array + left, right - left);
 }
 
 /**
  * merge_sort_rec - Recursively splits the array and sorts it.
- * @array: Array of integers.
+ * @array: The array of integers.
  * @temp: Temporary array for merging.
- * @size: Size of the array.
+ * @left: Left index of the subarray.
+ * @right: Right index of the subarray.
  */
-void merge_sort_rec(int *array, int *temp, size_t size)
+void merge_sort_rec(int *array, int *temp, size_t left, size_t right)
 {
-	size_t mid;
-
-	if (size < 2)
+	if (right - left < 2)
 		return;
 
-	mid = size / 2;
+	size_t mid = left + (right - left) / 2;
 
-	merge_sort_rec(array, temp, mid);
-	merge_sort_rec(array + mid, temp, size - mid);
-
-	merge(array, array, array + mid, mid, size - mid);
+	merge_sort_rec(array, temp, left, mid);
+	merge_sort_rec(array, temp, mid, right);
+	merge(array, temp, left, mid, right);
 }
 
 /**
- * merge_sort - Sorts an array using the Merge sort algorithm.
- * @array: Array of integers.
+ * merge_sort - Sorts an array using Merge Sort algorithm.
+ * @array: The array of integers.
  * @size: Number of elements in the array.
  */
 void merge_sort(int *array, size_t size)
 {
-	int *temp = NULL;
-
 	if (array == NULL || size < 2)
 		return;
 
-	temp = malloc(sizeof(int) * size);
+	int *temp = malloc(sizeof(int) * size);
 	if (temp == NULL)
 		return;
 
-	merge_sort_rec(array, temp, size);
-
+	merge_sort_rec(array, temp, 0, size);
 	free(temp);
 }
