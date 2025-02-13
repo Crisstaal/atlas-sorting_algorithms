@@ -8,15 +8,15 @@
  */
 void print_array(int *array, size_t size)
 {
-    size_t i;
+	size_t i;
 
-    for (i = 0; i < size; i++)
-    {
-        printf("%d", array[i]);
-        if (i < size - 1)
-            printf(", ");
-    }
-    printf("\n");
+	for (i = 0; i < size; i++)
+	{
+		printf("%d", array[i]);
+		if (i < size - 1)
+			printf(", ");
+	}
+	printf("\n");
 }
 
 /**
@@ -29,28 +29,28 @@ void print_array(int *array, size_t size)
  */
 void merge(int *array, int *left, int *right, size_t size_left, size_t size_right)
 {
-    size_t i = 0, j = 0, k = 0;
+	size_t i = 0, j = 0, k = 0;
 
-    while (i < size_left && j < size_right)
-    {
-        if (left[i] < right[j])
-            array[k++] = left[i++];
-        else
-            array[k++] = right[j++];
-    }
+	while (i < size_left && j < size_right)
+	{
+		if (left[i] < right[j])
+			array[k++] = left[i++];
+		else
+			array[k++] = right[j++];
+	}
 
-    while (i < size_left)
-        array[k++] = left[i++];
-    while (j < size_right)
-        array[k++] = right[j++];
+	while (i < size_left)
+		array[k++] = left[i++];
+	while (j < size_right)
+		array[k++] = right[j++];
 
-    printf("Merging...\n");
-    printf("[left]: ");
-    print_array(left, size_left);
-    printf("[right]: ");
-    print_array(right, size_right);
-    printf("[Done]: ");
-    print_array(array, size_left + size_right);
+	printf("Merging...\n");
+	printf("[left]: ");
+	print_array(left, size_left);
+	printf("[right]: ");
+	print_array(right, size_right);
+	printf("[Done]: ");
+	print_array(array, size_left + size_right);
 }
 
 /**
@@ -61,17 +61,17 @@ void merge(int *array, int *left, int *right, size_t size_left, size_t size_righ
  */
 void merge_sort_rec(int *array, int *temp, size_t size)
 {
-    size_t mid;
+	size_t mid;
 
-    if (size < 2)
-        return;
+	if (size < 2)
+		return;
 
-    mid = size / 2;
+	mid = size / 2;
 
-    merge_sort_rec(array, temp, mid);
-    merge_sort_rec(array + mid, temp, size - mid);
+	merge_sort_rec(array, temp, mid);
+	merge_sort_rec(array + mid, temp, size - mid);
 
-    merge(array, array, array + mid, mid, size - mid);
+	merge(array, array, array + mid, mid, size - mid);
 }
 
 /**
@@ -81,16 +81,16 @@ void merge_sort_rec(int *array, int *temp, size_t size)
  */
 void merge_sort(int *array, size_t size)
 {
-    int *temp = NULL;
+	int *temp = NULL;
 
-    if (array == NULL || size < 2)
-        return;
+	if (array == NULL || size < 2)
+		return;
 
-    temp = malloc(sizeof(int) * size);
-    if (temp == NULL)
-        return;
+	temp = malloc(sizeof(int) * size);
+	if (temp == NULL)
+		return;
 
-    merge_sort_rec(array, temp, size);
+	merge_sort_rec(array, temp, size);
 
-    free(temp);
+	free(temp);
 }
